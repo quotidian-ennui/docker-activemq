@@ -1,7 +1,7 @@
 FROM openjdk:8-jre-slim
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
-ARG ACTIVEMQ_VERSION=5.15.13
+ARG ACTIVEMQ_VERSION=5.16.0
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
