@@ -1,7 +1,7 @@
 FROM azul/zulu-openjdk-alpine:8-jre
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
-ARG ACTIVEMQ_VERSION=5.16.3
+ARG ACTIVEMQ_VERSION=5.16.4
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
@@ -9,7 +9,7 @@ ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
 ENV ACTIVEMQ_TCP=61616 ACTIVEMQ_AMQP=5672 ACTIVEMQ_STOMP=61613 ACTIVEMQ_MQTT=1883 ACTIVEMQ_WS=61614 ACTIVEMQ_UI=8161
 ENV ACTIVEMQ_HOME /opt/activemq
 # JAVA_HOME was set wrong on the latest 8-jre image.
-ENV JAVA_HOME=/usr/lib/jvm/zulu8
+# ENV JAVA_HOME=/usr/lib/jvm/zulu8
 
 # Download and validate checksum; sha1sum will fail if no good.
 RUN \
