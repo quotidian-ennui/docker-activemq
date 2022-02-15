@@ -19,8 +19,14 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
-    - name: Docker buildx
+    - name: docker buildx eclipse-temurin
       run: |
         docker buildx build . --platform linux/amd64,linux/arm64/v8,linux/arm/v7 \
             -t lewinc/activemq:latest \
+            -f debian/Dockerfile --push
+    - name: docker buildx zulu-alpine
+      # no zulu-alpine for arm64 (only jdk17 has it)
+      run: |
+        docker buildx build . --platform linux/amd64 \
+            -t lewinc/activemq:latest-zulu-alpine \
             -f debian/Dockerfile --push
