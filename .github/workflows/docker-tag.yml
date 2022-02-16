@@ -1,7 +1,9 @@
-name: Docker
+name: docker-tag
 
 on:
   push:
+    tags:
+      - '*'
     branches: master
 
 jobs:
@@ -19,14 +21,21 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
+    - name: Get git tag
+      id: tag
+      uses: dawidd6/action-get-tag@v1
+      with:
+        strip_v: true
     - name: docker buildx eclipse-temurin
       run: |
+        echo Building lewinc/activemq:${{ steps.tag.outputs.tag }}
         docker buildx build . --platform linux/amd64,linux/arm64/v8,linux/arm/v7 \
-            -t lewinc/activemq:latest \
+            -t lewinc/activemq:${{ steps.tag.outputs.tag }} \
             -f debian/Dockerfile --push
     - name: docker buildx zulu-alpine
       # no zulu-alpine for arm64 (only jdk17 has it)
       run: |
+        echo Building lewinc/activemq:${{ steps.tag.outputs.tag }}-zulu-alpine
         docker buildx build . --platform linux/amd64 \
-            -t lewinc/activemq:latest-zulu-alpine \
+            -t lewinc/activemq:${{ steps.tag.outputs.tag }}-zulu-alpine \
             -f debian/Dockerfile --push
