@@ -27,14 +27,14 @@ jobs:
         strip_v: true
     - name: docker buildx eclipse-temurin
       run: |
-        echo Building lewinc/activemq:${{ steps.tag.outputs.tag }}
+        echo Building activemq:${{ steps.tag.outputs.tag }}
         docker buildx build . --platform linux/amd64,linux/arm64/v8,linux/arm/v7 \
             -t lewinc/activemq:${{ steps.tag.outputs.tag }} \
             -f debian/Dockerfile --push
     - name: docker buildx zulu-alpine
       # no zulu-alpine for arm64 (only jdk17 has it)
       run: |
-        echo Building lewinc/activemq:${{ steps.tag.outputs.tag }}-zulu-alpine
+        echo Building activemq:${{ steps.tag.outputs.tag }}-zulu-alpine
         docker buildx build . --platform linux/amd64 \
             -t lewinc/activemq:${{ steps.tag.outputs.tag }}-zulu-alpine \
-            -f debian/Dockerfile --push
+            -f zulu-alpine/Dockerfile --push
