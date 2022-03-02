@@ -7,6 +7,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # no zulu-alpine for arm64 (only jdk17 has it)
+        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64']
     steps:
     - name: Checkout
       uses: actions/checkout@v2.4.0
@@ -19,14 +23,11 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_TOKEN }}
-    - name: docker buildx eclipse-temurin
+    - name: docker buildx ${{ matrix.docker_target }}
       run: |
-        docker buildx build . --platform linux/amd64,linux/arm64/v8,linux/arm/v7 \
-            -t lewinc/activemq:latest \
-            -f debian/Dockerfile --push
-    - name: docker buildx zulu-alpine
-      # no zulu-alpine for arm64 (only jdk17 has it)
-      run: |
-        docker buildx build . --platform linux/amd64 \
-            -t lewinc/activemq:latest-zulu-alpine \
-            -f zulu-alpine/Dockerfile --push
+        DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
+        DOCKER_IMAGE=lewinc/activemq:latest$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
+        DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
+        echo "-------- Building ${DOCKER_IMAGE}(${DOCKER_PLATFORM}) using ${DOCKER_FILE}"
+        docker buildx build . --no-cache --platform ${DOCKER_PLATFORM} -t "${DOCKER_IMAGE}" -f "${DOCKER_FILE}" --push
+        echo "-------- Finished ${DOCKER_IMAGE}(${DOCKER_PLATFORM})"
