@@ -40,10 +40,10 @@ jobs:
      - name: Build ${{ steps.docker_info.outputs.docker_tags }}
        uses: docker/build-push-action@v2
        with:
+         # no-cache: true
          builder: ${{ steps.buildx.outputs.name }}
          context: .
          file: ${{ steps.docker_image.outputs.docker_file }}
          platforms: ${{ steps.docker_image.outputs.docker_platform }}
          push: true
          tags: ${{ steps.docker_image.outputs.docker_tags }}
-         # no-cache: true
