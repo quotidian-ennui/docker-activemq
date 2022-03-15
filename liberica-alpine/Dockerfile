@@ -1,15 +1,13 @@
-FROM bellsoft/liberica-openjdk-alpine:8
+FROM bellsoft/liberica-openjdk-alpine:11
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
-ARG ACTIVEMQ_VERSION=5.16.4
+ARG ACTIVEMQ_VERSION=5.17.0
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
 
 ENV ACTIVEMQ_TCP=61616 ACTIVEMQ_AMQP=5672 ACTIVEMQ_STOMP=61613 ACTIVEMQ_MQTT=1883 ACTIVEMQ_WS=61614 ACTIVEMQ_UI=8161
-ENV ACTIVEMQ_HOME /opt/activemq
-# JAVA_HOME was set wrong on the latest 8-jre image.
-# ENV JAVA_HOME=/usr/lib/jvm/zulu8
+ENV ACTIVEMQ_HOME /opt/$ACTIVEMQ
 
 # Download and validate checksum; sha1sum will fail if no good.
 RUN \
@@ -20,7 +18,6 @@ RUN \
   sha1sum -c $ACTIVEMQ_CHECKSUM && \
   mkdir -p /opt && \
   tar xzf $ACTIVEMQ_TGZ -C /opt && \
-  ln -s /opt/$ACTIVEMQ $ACTIVEMQ_HOME && \
   chown -R activemq /opt/$ACTIVEMQ && \
   chown -h activemq $ACTIVEMQ_HOME && \
   rm -f $ACTIVEMQ_TGZ $ACTIVEMQ_CHECKSUM
