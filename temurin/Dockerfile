@@ -8,22 +8,26 @@ ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
 ENV ACTIVEMQ_TCP=61616 ACTIVEMQ_AMQP=5672 ACTIVEMQ_STOMP=61613 ACTIVEMQ_MQTT=1883 ACTIVEMQ_WS=61614 ACTIVEMQ_UI=8161
 ENV ACTIVEMQ_HOME /opt/$ACTIVEMQ
 
+COPY xslt/remove-cors.xslt /root
+
 # Download and validate checksum; sha1sum will fail if no good.
 # Since we are accessing the nexus repo; there's only sha1, not sha512 and it's raw
 # so we build up the appropriate file for sha1sum
 RUN \
   apt-get -y -q update && \
-  apt-get install --no-install-recommends -y curl bash && \
+  apt-get install --no-install-recommends -y curl bash xsltproc && \
   rm -rf /var/lib/apt/lists/* && \
   curl -fsSL -o $ACTIVEMQ_TGZ -q "$BASE_URL/$ACTIVEMQ_VERSION/$ACTIVEMQ_TGZ"  && \
   echo "$(curl -fsSL -a -o - $BASE_URL/$ACTIVEMQ_VERSION/$ACTIVEMQ_CHECKSUM)  $ACTIVEMQ_TGZ" >$ACTIVEMQ_CHECKSUM && \
   sha1sum -c $ACTIVEMQ_CHECKSUM && \
   mkdir -p /opt && \
   tar xzf $ACTIVEMQ_TGZ -C /opt && \
+  xsltproc -o ./jolokia-access.xml /root/remove-cors.xslt $ACTIVEMQ_HOME/webapps/api/WEB-INF/classes/jolokia-access.xml && \
+  mv ./jolokia-access.xml $ACTIVEMQ_HOME/webapps/api/WEB-INF/classes/jolokia-access.xml && \
   useradd -r -M -d $ACTIVEMQ_HOME activemq && \
-  chown -R activemq:activemq /opt/$ACTIVEMQ && \
+  chown -R activemq:activemq $ACTIVEMQ_HOME && \
   chown -h activemq:activemq $ACTIVEMQ_HOME && \
-  rm -f $ACTIVEMQ_TGZ $ACTIVEMQ_CHECKSUM
+  rm -f $ACTIVEMQ_TGZ $ACTIVEMQ_CHECKSUM /root/remove-cors.xslt
 
 WORKDIR $ACTIVEMQ_HOME
 USER activemq
