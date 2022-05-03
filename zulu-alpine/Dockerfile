@@ -1,7 +1,7 @@
 FROM azul/zulu-openjdk-alpine:11-jre
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
-ARG ACTIVEMQ_VERSION=5.17.0
+ARG ACTIVEMQ_VERSION=5.17.1
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
@@ -20,8 +20,8 @@ RUN \
   sha1sum -c $ACTIVEMQ_CHECKSUM && \
   mkdir -p /opt && \
   tar xzf $ACTIVEMQ_TGZ -C /opt && \
-  xsltproc -o ./jolokia-access.xml /root/remove-cors.xslt $ACTIVEMQ_HOME/webapps/api/WEB-INF/classes/jolokia-access.xml && \
-  mv ./jolokia-access.xml $ACTIVEMQ_HOME/webapps/api/WEB-INF/classes/jolokia-access.xml && \
+  xsltproc -o ./jolokia-access.xml /root/remove-cors.xslt $ACTIVEMQ_HOME/conf/jolokia-access.xml && \
+  mv ./jolokia-access.xml $ACTIVEMQ_HOME/conf/jolokia-access.xml && \
   chown -R activemq $ACTIVEMQ_HOME && \
   chown -h activemq $ACTIVEMQ_HOME && \
   rm -f $ACTIVEMQ_TGZ $ACTIVEMQ_CHECKSUM /root/remove-cors.xslt
