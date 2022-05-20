@@ -2,7 +2,7 @@ name: is-dependabot
 on:
   push:
     branches: master
-  pull-request:
+  pull_request:
     branches: master
 
 # Dependabot doesn't have access to secrets
