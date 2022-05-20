@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/docker-build-image.yml
+    uses: ./.github/workflows/docker-build-latest.yml
     with:
       dockerhub_push: false
     secrets:
