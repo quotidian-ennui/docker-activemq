@@ -1,4 +1,4 @@
-name: docker-latest
+name: docker-build-latest
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
-    uses: ./.github/workflows/docker-build-latest.yml
+    uses: ./.github/workflows/docker-build-image.yml
     with:
       dockerhub_push: true
     secrets:

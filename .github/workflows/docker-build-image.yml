@@ -1,4 +1,4 @@
-name: docker-build-latest
+name: docker-build-image
 
 on:
   workflow_call:
@@ -15,7 +15,7 @@ on:
         required: true
 
 jobs:
-  docker-build-latest:
+  docker-build-image:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -46,9 +46,13 @@ jobs:
       ## DOCKER_TAG=${GITHUB_REF/refs\/tags\//} provided the GITHUB_REF
       ## matches that refs/tags/5.17.0 or whatever.
       run: |
-        echo "GITHUB_REF=${GITHUB_REF}"
+        DOCKER_IMAGE_VERSION=${GITHUB_REF/refs\/tags\//}
+        if [[ $DOCKER_IMAGE_VERSION = refs* ]]
+        then
+          DOCKER_IMAGE_VERSION=latest
+        fi
         DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
-        DOCKER_IMAGE=lewinc/activemq:latest$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
+        DOCKER_IMAGE=lewinc/activemq:$DOCKER_IMAGE_VERSION$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
         DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
         echo ::set-output name=docker_file::${DOCKER_FILE}
         echo ::set-output name=docker_tags::${DOCKER_IMAGE}
