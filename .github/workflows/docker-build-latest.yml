@@ -1,0 +1,65 @@
+name: docker-build-latest
+
+on:
+  workflow_call:
+    inputs:
+      dockerhub_push:
+        required: false
+        default: false
+        description: 'Whether to push to docker hub registry'
+        type: boolean
+    secrets:
+      DOCKERHUB_USER:
+        required: true
+      DOCKERHUB_TOKEN:
+        required: true
+
+jobs:
+  docker-build-latest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # no zulu-alpine for arm64 (only jdk17 has it)
+        # interestingly liberica-alpine is slightly bigger than zulu-alpine
+        # might be because it appears to be glibc not muslc?
+        # We're actually abusing matrix strategy here (because we can)
+        # <dirname>:<image-suffix>:<archs-to-build-for>
+        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64']
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      if:  ${{ inputs.dockerhub_push == true }}
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Docker Image Info
+      id: docker_image
+      ## Rather than using dawidd6/action-get-tag@v1
+      ## We can probably work out the tag name based on the GITHUB_REF
+      ## DOCKER_TAG=${GITHUB_REF/refs\/tags\//} provided the GITHUB_REF
+      ## matches that refs/tags/5.17.0 or whatever.
+      run: |
+        echo "GITHUB_REF=${GITHUB_REF}"
+        DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
+        DOCKER_IMAGE=lewinc/activemq:latest$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
+        DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
+        echo ::set-output name=docker_file::${DOCKER_FILE}
+        echo ::set-output name=docker_tags::${DOCKER_IMAGE}
+        echo ::set-output name=docker_platform::${DOCKER_PLATFORM}
+    - name: Build Image
+      uses: docker/build-push-action@v3
+      with:
+        # no-cache: true
+        builder: ${{ steps.buildx.outputs.name }}
+        context: .
+        file: ${{ steps.docker_image.outputs.docker_file }}
+        platforms: ${{ steps.docker_image.outputs.docker_platform }}
+        push: ${{ inputs.dockerhub_push }}
+        tags: ${{ steps.docker_image.outputs.docker_tags }}

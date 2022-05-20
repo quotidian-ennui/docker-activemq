@@ -1,0 +1,18 @@
+name: is-dependabot
+on:
+  push:
+    branches: master
+  pull-request:
+    branches: master
+
+# Dependabot doesn't have access to secrets
+# which means the private github package repo isn't
+# accessible via a standard PR github action.
+# https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-852541544
+# This then triggers dependabot-build.yml
+jobs:
+  is-dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - run: echo "Activity by Dependabot"
