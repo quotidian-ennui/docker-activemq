@@ -41,7 +41,7 @@ jobs:
           DOCKER_IMAGE_SUFFIX=$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
           DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
           echo ::set-output name=docker_file::${DOCKER_FILE}
-          echo ::set-output name=docker_image_suffix::${DOCKER_IMAGE}
+          echo ::set-output name=docker_image_suffix::${DOCKER_IMAGE_SUFFIX}
           echo ::set-output name=docker_platform::${DOCKER_PLATFORM}
       - name: Docker Image Metadata
         id: docker_meta
