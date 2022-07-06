@@ -50,7 +50,7 @@ jobs:
           images: ghcr.io/${{github.repository}}
           flavor: |
             latest=auto
-            suffix=steps.docker_build_init.docker_image_suffix,onlatest=true
+            suffix=${{ steps.docker_build_init.docker_image_suffix }},onlatest=true
           tags: |
             type=ref,event=branch
             type=ref,event=pr
