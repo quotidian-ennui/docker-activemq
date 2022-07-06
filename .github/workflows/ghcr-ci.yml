@@ -1,0 +1,70 @@
+name: ghcr-ci
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  release:
+    types: [created]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # no zulu-alpine for arm64 (only jdk17 has it)
+        # interestingly liberica-alpine is slightly bigger than zulu-alpine
+        # might be because it appears to be glibc not muslc?
+        # We're actually abusing matrix strategy here (because we can)
+        # <dirname>:<image-suffix>:<archs-to-build-for>
+        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        if: github.event_name == 'release' && github.event.action == 'created'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker build init
+        id: docker_build_init
+        run: |
+          DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
+          DOCKER_IMAGE_SUFFIX=$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
+          DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
+          echo ::set-output name=docker_file::${DOCKER_FILE}
+          echo ::set-output name=docker_image_suffix::${DOCKER_IMAGE}
+          echo ::set-output name=docker_platform::${DOCKER_PLATFORM}
+      - name: Docker Image Metadata
+        id: docker_meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{github.repository}}
+          flavor: |
+            latest=auto
+            suffix=steps.docker_build_init.docker_image_suffix,onlatest=true
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - name: Docker build
+        id: docker_build
+        uses: docker/build-push-action@v3
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ${{ steps.docker_build_init.outputs.docker_file }}
+          platforms: ${{ steps.docker_build_init.outputs.docker_platform }}
+          push: ${{ github.event_name == 'release' && github.event.action == 'created' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
