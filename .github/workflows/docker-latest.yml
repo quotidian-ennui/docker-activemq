@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/docker-build-image.yml
     with:
-      dockerhub_push: true
+      registry_push: true
     secrets:
       DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
