@@ -52,9 +52,9 @@ jobs:
         DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
         DOCKER_IMAGE_SUFFIX=$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
         DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
-        echo ::set-output name=docker_file::${DOCKER_FILE}
-        echo ::set-output name=docker_image_suffix::${DOCKER_IMAGE_SUFFIX}
-        echo ::set-output name=docker_platform::${DOCKER_PLATFORM}
+        echo "docker_file=${DOCKER_FILE}" >> $GITHUB_OUTPUT
+        echo "docker_image_suffix=${DOCKER_IMAGE_SUFFIX}" >> $GITHUB_OUTPUT
+        echo "docker_platform=${DOCKER_PLATFORM}" >> $GITHUB_OUTPUT
     - name: Docker Image Metadata
       id: docker_meta
       uses: docker/metadata-action@v4
