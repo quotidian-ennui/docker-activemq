@@ -9,9 +9,6 @@ USER?=$(shell whoami)
 BASE_TAG:="$(USER)/activemq"
 PLATFORM:="linux/amd64"
 
-.PHONY: clean $(TARGET_DIRS)
-.SILENT: clean
-
 help:
 	grep -E '^[a-zA-Z_-]+.*:.*?## .*$$' $(word 1,$(MAKEFILE_LIST)) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
