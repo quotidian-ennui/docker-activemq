@@ -1,9 +1,9 @@
 name: is-dependabot
 on:
   push:
-    branches: master
+    branches: main
   pull_request:
-    branches: master
+    branches: main
 
 # Dependabot doesn't have access to secrets
 # which means the private github package repo isn't

@@ -32,5 +32,5 @@ endif
 diff:  ## Check dependencies via updatecli
 	$(UPDATE_CLI) diff
 
-apply:  ## Updates dependencies via updatecli
+update:  ## Updates dependencies via updatecli
 	$(UPDATE_CLI) apply
