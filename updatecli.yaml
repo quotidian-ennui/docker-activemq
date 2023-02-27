@@ -1,0 +1,33 @@
+sources:
+  activemq:
+    kind: maven
+    spec:
+      repository: "https://repository.apache.org/content/repositories/releases/"
+      groupid: "org.apache.activemq"
+      artifactid: "apache-activemq"
+
+targets:
+  liberica:
+    kind: file
+    sourceid: activemq
+    name: Updates for liberica-alpine
+    spec:
+      file: liberica-alpine/Dockerfile
+      matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
+      replacepattern: '$1={{ source `activemq` }}'
+  temurin:
+    kind: file
+    sourceid: activemq
+    name: Updates for temurin
+    spec:
+      file: temurin/Dockerfile
+      matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
+      replacepattern: '$1={{ source `activemq` }}'
+  zulu:
+    kind: file
+    sourceid: activemq
+    name: Updates for zulu-alpine
+    spec:
+      file: zulu-alpine/Dockerfile
+      matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
+      replacepattern: '$1={{ source `activemq` }}'
