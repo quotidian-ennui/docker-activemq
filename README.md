@@ -41,7 +41,7 @@ INFO: Loading '/opt/apache-activemq-5.17.4/bin/env'
 
 ## Notes
 
-- Note the `-Djetty.host=0.0.0.0` since otherwise jetty.xml may be configured to only listen on 127.0.0.1 which has the tendency break port forwarding; this doesn't matter if you never want to connect via a browser, but will potentially break KEDA.
+- Note the `-Djetty.host=0.0.0.0` since otherwise jetty.xml may be configured to only listen on 127.0.0.1 which has the tendency to break port forwarding; this doesn't matter if you never want to connect via a browser, but will potentially break KEDA.
 - Removes the strict CORS from jolokia. When I was mucking around with KEDA previously (c. early 2022), CORS was breaking KEDA (this is now fixed in KEDA, but I'm lazy)
 - `make diff` | `make update` to use updatecli to update image in the dockerfiles.
 
