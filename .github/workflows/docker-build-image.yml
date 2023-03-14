@@ -81,6 +81,12 @@ jobs:
         push: ${{ inputs.registry_push }}
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
+
+  docker-hub-description:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
     - name: Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
       if:  ${{ inputs.registry_push == true }}
