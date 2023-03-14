@@ -20,7 +20,8 @@ activemq() {
   local LATEST_TAG="latest-liberica-alpine"
   AMQ_VER=${AMQ_VER:="$LATEST_TAG"}
   local IMAGE="ghcr.io/quotidian-ennui/docker-activemq:$AMQ_VER"
-  docker run --name activemq -it --rm -e JDK_JAVA_OPTIONS="-Djetty.host=0.0.0.0" -p127.0.0.1:8161:8161 -p127.0.0.1:61616:61616 \
+  docker run --name activemq -it --rm -e JDK_JAVA_OPTIONS="-Djetty.host=0.0.0.0" \
+        -p127.0.0.1:8161:8161 -p127.0.0.1:61616:61616 \
          -p127.0.0.1:5672:5672 -h activemq.local "$IMAGE"
 }
 
@@ -37,10 +38,10 @@ INFO: Loading '/opt/apache-activemq-5.17.4/bin/env'
  INFO | ActiveMQ Jolokia REST API available at http://0.0.0.0:8161/api/jolokia/
 ```
 
-- Note the `-Djetty.host=0.0.0.0` since otherwise jetty.xml may be configured to only listen on 127.0.0.1 which has the tendency break port forwarding; this doesn't matter if you never want to connect via a browser, but will potentially break KEDA.
 
 ## Notes
 
+- Note the `-Djetty.host=0.0.0.0` since otherwise jetty.xml may be configured to only listen on 127.0.0.1 which has the tendency break port forwarding; this doesn't matter if you never want to connect via a browser, but will potentially break KEDA.
 - Removes the strict CORS from jolokia. When I was mucking around with KEDA previously (c. early 2022), CORS was breaking KEDA (this is now fixed in KEDA, but I'm lazy)
 - `make diff` | `make update` to use updatecli to update image in the dockerfiles.
 

@@ -81,3 +81,10 @@ jobs:
         push: ${{ inputs.registry_push }}
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
+    - name: Docker Hub Description
+      uses: peter-evans/dockerhub-description@v3
+      if:  ${{ inputs.registry_push == true }}
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        repository: lewinc/activemq
