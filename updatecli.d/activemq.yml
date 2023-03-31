@@ -1,0 +1,56 @@
+{{ $autoPullRequest := eq (env "UPDATECLI_PULL_REQUEST" | default "false") "true" }}
+
+{{ if $autoPullRequest }}
+actions:
+  pull_request:
+    scmid: default
+    title: '[updatecli] Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
+    kind: github/pullrequest
+    spec:
+      labels:
+        - dependencies
+
+scms:
+  default:
+    disabled: false
+    kind: github
+    spec:
+      branch: main
+      owner: quotidian-ennui
+      repository: docker-activemq
+      user: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      email: 41898282+github-actions[bot]@users.noreply.github.com
+      username: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      commitmessage:
+        type: "chore"
+        scope: "deps"
+        title: 'Bump ActiveMQ version to {{ source "activemqLatestVersion" }}'
+
+{{ end }}
+
+sources:
+  activemqLatestVersion:
+    kind: maven
+    name: Get ActiveMQ Latest
+    spec:
+      repository: "https://repository.apache.org/content/repositories/releases/"
+      groupid: "org.apache.activemq"
+      artifactid: "apache-activemq"
+
+targets:
+  dockerfiles:
+    kind: file
+    sourceid: activemqLatestVersion
+    name: Updates for each dockerfile
+    spec:
+      files:
+        - liberica-alpine/Dockerfile
+        - temurin/Dockerfile
+        - zulu-alpine/Dockerfile
+        - msopenjdk/Dockerfile
+      matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
+      replacepattern: '$1={{ source `activemqLatestVersion` }}'
+{{ if $autoPullRequest }}
+    scmid: default
+{{ end }}
