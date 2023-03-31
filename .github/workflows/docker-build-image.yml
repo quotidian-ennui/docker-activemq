@@ -19,12 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # no zulu-alpine for arm64 (only jdk17 has it)
         # interestingly liberica-alpine is slightly bigger than zulu-alpine
         # might be because it appears to be glibc not muslc?
         # We're actually abusing matrix strategy here (because we can)
         # <dirname>:<image-suffix>:<archs-to-build-for>
-        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64']
+        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64,linux/arm64/v8']
     steps:
     - name: Checkout
       uses: actions/checkout@v3
