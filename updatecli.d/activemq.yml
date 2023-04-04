@@ -6,6 +6,7 @@ actions:
     scmid: default
     title: '[updatecli] Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
     kind: github/pullrequest
+    mergemethod: "rebase"
     spec:
       labels:
         - dependencies
@@ -18,7 +19,7 @@ scms:
       branch: main
       owner: quotidian-ennui
       repository: docker-activemq
-      user: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      user: 'github-actions[bot]'
       email: 41898282+github-actions[bot]@users.noreply.github.com
       username: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
@@ -26,6 +27,7 @@ scms:
         type: "chore"
         scope: "deps"
         title: 'Bump ActiveMQ version to {{ source "activemqLatestVersion" }}'
+        hidecredit: true
 
 {{ end }}
 

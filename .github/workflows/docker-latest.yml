@@ -5,6 +5,9 @@ on:
     branches: main
     paths-ignore:
       - "README.md"
+      - ".github/workflows/updatecli.yml"
+      - ".github/dependabot.yml"
+      - ".github/docker-hub-desc.yml.yml"
 
 jobs:
   build:
