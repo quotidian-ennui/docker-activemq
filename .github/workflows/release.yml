@@ -18,14 +18,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Generate changelog
-        id: changelog
-        uses: metcalfc/changelog-generator@v4.1.0
         with:
-          mytoken: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - name: Generate changelog
+        uses: orhun/git-cliff-action@v2
+        id: changelog
+        with:
+          args: --current
+      # - name: Generate changelog
+      #   id: changelog
+      #   uses: metcalfc/changelog-generator@v4.1.0
+      #   with:
+      #     mytoken: ${{ secrets.GITHUB_TOKEN }}
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          body: ${{ steps.changelog.outputs.changelog }}
-          draft: true
+          body: ${{ steps.changelog.outputs.content }}
+          # body: ${{ steps.changelog.outputs.changelog }}
+          draft: false
           makeLatest: true

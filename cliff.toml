@@ -4,7 +4,7 @@
 # changelog header
 header = """
 # Changelog\n
-All notable changes to this project will be documented in this file.\n
+A new ActiveMQ release happened; this changelog just lists the changes to the repo used to build the docker image.\n
 """
 # template for the changelog body
 # https://tera.netlify.app/docs/#introduction
@@ -34,7 +34,7 @@ conventional_commits = true
 filter_unconventional = false
 # regex for preprocessing the commit messages
 commit_preprocessors = [
-    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/technekes/adx-runtime-java/issues/${2}))"},
+    { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "([#${2}](https://github.com/quotidian-ennui/docker-activemq/issues/${2}))"},
     { pattern = '^Bump (.*)', replace = "deps: Bump $1"},
 ]
 # regex for parsing and grouping commits
@@ -44,11 +44,13 @@ commit_parsers = [
     { message = "^fix", group = "<!-- 02 -->Bug Fixes"},
     { message = "^doc", group = "<!-- 03 -->Documentation"},
     { message = "^perf", group = "<!-- 04 -->Performance"},
-    { message = "^refactor", group = "<!-- 05 -->Refactor"},
+    { message = "^refactor", group = "<!-- 05 -->Refactoring"},
     { message = "^test", group = "<!-- 06 -->Testing"},
     { message = "^(ci|build)", group = "<!-- 07 -->Build Environment"},
     { message = "^fix\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
+    { message = "^deps\\(actions\\)", group = "<!-- 07 -->Build Environment"},
     { message = "^deps", group = "<!-- 08 -->Dependency Management"},
+    { message = "^chore\\(deps\\)", group = "<!-- 08 -->Dependency Management"},
     { message = "^chore\\(release\\): prepare for", skip = true},
     { message = "^release:", skip = true},
     { message = "^chore", group = "<!-- 09 -->Miscellaneous Tasks"},
