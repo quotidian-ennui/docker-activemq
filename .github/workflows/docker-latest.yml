@@ -7,7 +7,7 @@ on:
       - "README.md"
       - ".github/workflows/updatecli.yml"
       - ".github/dependabot.yml"
-      - ".github/docker-hub-desc.yml.yml"
+      - ".github/docker-hub-desc.yml"
 
 jobs:
   build:
@@ -15,6 +15,7 @@ jobs:
     uses: ./.github/workflows/docker-build-image.yml
     with:
       registry_push: true
+      target_branch: ${{ github.head_ref }}
     secrets:
       DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
