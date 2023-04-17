@@ -8,6 +8,10 @@ on:
         default: false
         description: 'Whether to push to docker registries'
         type: boolean
+      target_branch:
+        required: true
+        description: 'The branch to checkout and work-on'
+        type: string
     secrets:
       DOCKERHUB_USER:
         required: true
@@ -27,6 +31,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.target_branch }}
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
     - name: Set up Docker Buildx

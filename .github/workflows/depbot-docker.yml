@@ -1,19 +1,18 @@
 name: dependabot-docker-buildx
 on:
-  workflow_run:
-    workflows: ["is-dependabot"]
+  repository_dispatch:
     types:
-      - completed
+      - dependabot-build
 
 # A push via dependabot basically means that the github actions
 # have been upgraded; that doesn't mean we need to
 # Push a new image.
 jobs:
   build:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     uses: ./.github/workflows/docker-build-image.yml
     with:
       registry_push: false
+      target_branch: ${{ github.event.client_payload.branch }}
     secrets:
       DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
