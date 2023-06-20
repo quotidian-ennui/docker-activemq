@@ -33,3 +33,6 @@ diff:  ## Check dependencies via updatecli
 
 update:  ## Updates dependencies via updatecli
 	$(UPDATE_CLI) apply
+
+clean: ## Delete built images
+	$(DOCKER) images | grep "$(BASE_TAG)" | awk '{print $$3}' | xargs -r docker rmi
