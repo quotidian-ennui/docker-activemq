@@ -4,7 +4,7 @@
 actions:
   pull_request:
     scmid: default
-    title: '[updatecli] Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
+    title: 'deps(updatecli): Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
     kind: github/pullrequest
     mergemethod: "rebase"
     spec:
