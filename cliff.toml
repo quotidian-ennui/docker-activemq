@@ -5,9 +5,12 @@
 header = """
 # Changelog\n
 A new ActiveMQ release happened; this changelog just lists the changes to the repo used to build the docker image.\n
+
+> Note that [https://hub.docker.com/r/apache/activemq](https://hub.docker.com/r/apache/activemq) now exists which means that this image will die a slow death.
+> I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s)
+> and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?)\n
+
 """
-# template for the changelog body
-# https://tera.netlify.app/docs/#introduction
 body = """
 {% if version %}\
     ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
@@ -17,7 +20,7 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
     ### {{ group | striptags | trim | upper_first }}
     {% for commit in commits %}
-        - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message | upper_first }}\
+        - {% if commit.scope %}({{ commit.scope }}) {% endif %}{% if commit.breaking %}(**BREAKING**) {% endif %}{{ commit.message | upper_first }} by {{commit.author.name}}\
     {% endfor %}
 {% endfor %}\n
 """
@@ -26,6 +29,11 @@ trim = true
 # changelog footer
 footer = """
 """
+
+postprocessors = [
+    { pattern = 'dependabot\[.*\]', replace="@dependabot"},
+    { pattern = 'Lewin Chan', replace="@quotidian-ennui"},
+]
 
 [git]
 # parse the commits based on https://www.conventionalcommits.org
@@ -40,10 +48,13 @@ commit_preprocessors = [
 # regex for parsing and grouping commits
 commit_parsers = [
     { body = ".*security", group = "<!-- 00 -->Security"},
+    { message = "^feat\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
     { message = "^feat", group = "<!-- 01 -->Features"},
+    { message = "^fixup!", skip = true},
     { message = "^fix", group = "<!-- 02 -->Bug Fixes"},
     { message = "^doc", group = "<!-- 03 -->Documentation"},
     { message = "^perf", group = "<!-- 04 -->Performance"},
+    { message = "^refactor\\(ci|build\\)", group = "<!-- 07 -->Build Environment"},
     { message = "^refactor", group = "<!-- 05 -->Refactoring"},
     { message = "^test", group = "<!-- 06 -->Testing"},
     { message = "^(ci|build)", group = "<!-- 07 -->Build Environment"},
@@ -51,9 +62,9 @@ commit_parsers = [
     { message = "^deps\\(actions\\)", group = "<!-- 07 -->Build Environment"},
     { message = "^deps", group = "<!-- 08 -->Dependency Management"},
     { message = "^chore\\(deps\\)", group = "<!-- 08 -->Dependency Management"},
-    { message = "^chore\\(release\\): prepare for", skip = true},
+    { message = "^chore\\(release\\):", skip = true},
     { message = "^release:", skip = true},
-    { message = "^chore", group = "<!-- 09 -->Miscellaneous Tasks"},
+    { message = "^chore", group = "<!-- 99 -->Miscellaneous Tasks"},
 ]
 # filter out the commits that are not matched by commit parsers
 filter_commits = false
@@ -67,3 +78,4 @@ ignore_tags = ".*-alpha.*"
 date_order = false
 # sort the commits inside sections by oldest/newest order
 sort_commits = "oldest"
+protect_breaking_commits = true
