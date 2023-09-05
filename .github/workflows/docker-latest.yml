@@ -1,6 +1,9 @@
 name: docker-build-latest
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "15 04 * * SUN"
   push:
     branches: main
     paths-ignore:
