@@ -21,19 +21,40 @@ jobs:
         with:
           fetch-depth: 0
       - name: Generate changelog
-        uses: orhun/git-cliff-action@v2
-        id: changelog
+        uses: orhun/git-cliff-action@v2.0.6
+        id: git-cliff
         with:
           args: --current
-      # - name: Generate changelog
-      #   id: changelog
-      #   uses: metcalfc/changelog-generator@v4.1.0
-      #   with:
-      #     mytoken: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          OUTPUT: CHANGELOG.md
+      - name: Post Process Changelog
+        id: changelog
+        # post processor that changes names to github users.
+        # It will be done when post_processors are enabled in git-cliff (post 1.2.0)
+        # git-cliff was released @ 2023-08-31, but the corresponding action is not yet
+        # updated
+        run: |
+          function write_gh_outputs() {
+            file="$1"
+            # shellcheck disable=SC2129
+            eof=$(head -c15 /dev/urandom | base64)
+            {
+              printf "contents<<%s\n" "${eof}";
+              cat "$file";
+              printf "%s\n" "${eof}";
+            } >> "$GITHUB_OUTPUT"
+            echo "changelog=$file" >> "$GITHUB_OUTPUT"
+          }
+          postProcessing=$(mktemp --tmpdir="${RUNNER_TEMP}" changelog.XXXXXXXXXX)
+          cat "${{ steps.git-cliff.outputs.changelog }}" \
+            | sed -e "s/Lewin Chan/@quotidian-ennui/g" \
+            | sed -e "s/dependabot\[bot\]/@dependabot/g" \
+          >"$postProcessing"
+          write_gh_outputs "$postProcessing"
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
-          body: ${{ steps.changelog.outputs.content }}
+          bodyFile: ${{ steps.changelog.outputs.changelog }}
           # body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           makeLatest: true
