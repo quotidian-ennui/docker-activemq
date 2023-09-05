@@ -40,7 +40,7 @@ jobs:
           {
             "branch" : "${{ github.head_ref }}",
             "sha": "${{ github.event.pull_request.head.sha }}",
-            "pull_request": "${{ steps.findpr.outputs.pr }}",
+            "pull_request": "${{ steps.findpr.outputs.pr }}"
           }
         evt_type: "dependabot-build"
       with:
