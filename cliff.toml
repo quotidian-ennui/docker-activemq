@@ -6,8 +6,9 @@ header = """
 # Changelog\n
 A new ActiveMQ release happened; this changelog just lists the changes to the repo used to build the docker image.\n
 
-> Note that [https://hub.docker.com/r/apache/activemq](https://hub.docker.com/r/apache/activemq) now exists which means that this image will die a slow death.
-> I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s) and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?)\n
+> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) now exists which means that this image will die a slow death.
+> I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s) and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?)
+\n
 
 """
 body = """

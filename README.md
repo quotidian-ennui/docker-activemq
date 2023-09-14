@@ -12,6 +12,10 @@ Since rmohr/activemq hasn't built a docker image for a few months; here's 5.15.1
 
 Eventually I'll get bored too, and not update and so the cycle goes on; however the associated github project is here : https://github.com/quotidian-ennui/docker-activemq
 
+> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) now exists which means that this image will die a slow death.
+> I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s) and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?).
+> You might continue using this image because the apache 5.18.2 doesn't have an arm64 image (yet) and you're running on a raspberry pi or something.
+
 ## Startup
 
 ```
