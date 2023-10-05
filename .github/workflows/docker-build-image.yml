@@ -29,6 +29,10 @@ jobs:
         # <dirname>:<image-suffix>:<archs-to-build-for>
         docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64,linux/arm64/v8']
     steps:
+    - name: step-security/harden-runner
+      uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423 # v2.6.0
+      with:
+        egress-policy: audit
     - name: Checkout
       uses: actions/checkout@v4
       with:
