@@ -34,7 +34,7 @@ jobs:
       continue-on-error: true
       uses: dependabot/fetch-metadata@v1
     - name: Repository Dispatch Event
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         evt_payload: |
           {
