@@ -38,7 +38,7 @@ jobs:
             docker_platform: linux/amd64,linux/arm64
           - docker_target: zulu-alpine
             docker_tag_suffix: -zulu-alpine
-            docker_platform: linux/amd64,linux/arm64/v8
+            docker_platform: linux/amd64,linux/arm64
 
     steps:
     - name: step-security/harden-runner
