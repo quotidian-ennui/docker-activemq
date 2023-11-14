@@ -23,11 +23,23 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        # interestingly liberica-alpine is slightly bigger than zulu-alpine
-        # might be because it appears to be glibc not muslc?
-        # We're actually abusing matrix strategy here (because we can)
-        # <dirname>:<image-suffix>:<archs-to-build-for>
-        docker_target: [ 'temurin::linux/amd64,linux/arm64', 'liberica-alpine:-liberica-alpine:linux/amd64,linux/arm64', 'zulu-alpine:-zulu-alpine:linux/amd64,linux/arm64/v8']
+        # Abuse matrix-includes a little.
+        # docker_target == the sub-dir
+        # docker_tag_suffix == the suffix to add to the tag
+        # docker_platform == the platforms to build for
+        # Should still end up with 3 in the matrix, but with additional docker_tag_suffix and docker_platform
+        docker_target: [ 'temurin', 'liberica-alpine', 'zulu-alpine']
+        include:
+          - docker_target: temurin
+            docker_tag_suffix: ''
+            docker_platform: linux/amd64,linux/arm64
+          - docker_target: liberica-alpine
+            docker_tag_suffix: -liberica-alpine
+            docker_platform: linux/amd64,linux/arm64
+          - docker_target: zulu-alpine
+            docker_tag_suffix: -zulu-alpine
+            docker_platform: linux/amd64,linux/arm64/v8
+
     steps:
     - name: step-security/harden-runner
       uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423 # v2.6.0
@@ -55,15 +67,6 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Docker Image Info
-      id: docker_image
-      run: |
-        DOCKER_FILE=$(echo "${{ matrix.docker_target }}" | cut -f1 -d:)/Dockerfile
-        DOCKER_IMAGE_SUFFIX=$(echo "${{ matrix.docker_target }}" | cut -f2 -d:)
-        DOCKER_PLATFORM=$(echo "${{ matrix.docker_target }}" | cut -f3 -d:)
-        echo "docker_file=${DOCKER_FILE}" >> $GITHUB_OUTPUT
-        echo "docker_image_suffix=${DOCKER_IMAGE_SUFFIX}" >> $GITHUB_OUTPUT
-        echo "docker_platform=${DOCKER_PLATFORM}" >> $GITHUB_OUTPUT
     - name: Docker Image Metadata
       id: docker_meta
       uses: docker/metadata-action@v5
@@ -73,7 +76,7 @@ jobs:
           lewinc/activemq
         flavor: |
           latest=auto
-          suffix=${{ steps.docker_image.outputs.docker_image_suffix }},onlatest=true
+          suffix=${{ matrix.docker_tag_suffix }},onlatest=true
         tags: |
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
@@ -85,8 +88,8 @@ jobs:
         # no-cache: true
         builder: ${{ steps.buildx.outputs.name }}
         context: .
-        file: ${{ steps.docker_image.outputs.docker_file }}
-        platforms: ${{ steps.docker_image.outputs.docker_platform }}
+        file: ${{ matrix.docker_target }}/Dockerfile
+        platforms: ${{ matrix.docker_platform }}
         push: ${{ inputs.registry_push }}
         tags: ${{ steps.docker_meta.outputs.tags }}
         labels: ${{ steps.docker_meta.outputs.labels }}
