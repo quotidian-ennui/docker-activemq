@@ -1,0 +1,32 @@
+name: Dependabot Config Update
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**/Dockerfile"
+      - ".github/dependabot.template.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  regenerate-dependabot-yml:
+    name: Regenerate Dependabot yaml
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - name: generate-dependabot-config
+        uses: quotidian-ennui/actions-olio/generate-dependabot-config@main
