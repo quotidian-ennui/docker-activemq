@@ -23,6 +23,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        # nicer logging when you look at the workflow run
+        docker_target: ['temurin', 'liberica-alpine', 'zulu-alpine']
         include:
           - docker_target: temurin
             docker_tag_suffix: ''
