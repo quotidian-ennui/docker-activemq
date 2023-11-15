@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:11.0.20.1-jre
+FROM azul/zulu-openjdk-alpine:11-jre
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
 ARG ACTIVEMQ_VERSION=5.18.3
