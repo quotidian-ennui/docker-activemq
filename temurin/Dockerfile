@@ -1,4 +1,4 @@
-FROM eclipse-temurin:11-jre
+FROM eclipse-temurin:21-jre
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
 ARG ACTIVEMQ_VERSION=6.0.0
