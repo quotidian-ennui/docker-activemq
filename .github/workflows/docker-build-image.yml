@@ -12,6 +12,14 @@ on:
         required: true
         description: 'The branch to checkout and work-on'
         type: string
+      sha:
+        required: false
+        description: 'The sha for the commit status'
+        type: string
+      pull_request:
+        required: false
+        description: 'The pull request'
+        type: string
     secrets:
       DOCKERHUB_USER:
         required: true
@@ -41,11 +49,21 @@ jobs:
       uses: step-security/harden-runner@1b05615854632b887b69ae1be8cbefe72d3ae423 # v2.6.0
       with:
         egress-policy: audit
+    - name: Set commit status to pending
+      uses: quotidian-ennui/actions-olio/commit-status-and-label@main
+      if: |
+        inputs.sha != ''
+      with:
+        sha: ${{ inputs.sha }}
+        pull_request: ${{ inputs.pull_request }}
+        label_prefix: "docker (${{ matrix.docker_target }}): "
+        state: pending
     - name: Checkout
       uses: actions/checkout@v4.1.1
       with:
         ref: ${{ inputs.target_branch }}
-    - name: docker-build-push
+    - name: docker-image-builder
+      id: docker_build
       uses: quotidian-ennui/actions-olio/docker-image-builder@main
       with:
         registry_push: ${{ inputs.registry_push }}
@@ -58,3 +76,12 @@ jobs:
         ghcr_token: ${{ secrets.GITHUB_TOKEN }}
         dockerhub_user: ${{ secrets.DOCKERHUB_USER }}
         dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: set commit status
+      uses: quotidian-ennui/actions-olio/commit-status-and-label@main
+      if: |
+        (success() || failure()) &&  inputs.sha != ''
+      with:
+        sha: ${{ inputs.sha }}
+        pull_request: ${{ inputs.pull_request }}
+        label_prefix: "docker (${{ matrix.docker_target }}): "
+        state: ${{ steps.docker_build.outcome }}

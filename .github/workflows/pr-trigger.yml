@@ -38,5 +38,6 @@ jobs:
         ref: ${{ github.head_ref }}
         event_detail: |
          {
+            "pull_request": "${{ steps.findpr.outputs.pr }}",
             "dependabot_update_type": "${{ steps.depbot-metadata.outputs.update-type || 'unknown' }}"
          }

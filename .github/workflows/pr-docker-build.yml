@@ -1,4 +1,5 @@
 name: docker build on pr
+run-name: Build & Test PR (${{ github.event.client_payload.detail.pull_request }})
 on:
   repository_dispatch:
     types:
@@ -13,6 +14,8 @@ jobs:
     with:
       registry_push: false
       target_branch: ${{ github.event.client_payload.base.ref }}
+      sha: ${{ github.event.client_payload.base.sha }}
+      pull_request: ${{ github.event.client_payload.detail.pull_request }}
     secrets:
       DOCKERHUB_USER: ${{ secrets.DOCKER_USER }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_TOKEN }}
