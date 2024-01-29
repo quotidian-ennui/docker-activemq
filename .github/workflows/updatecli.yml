@@ -8,6 +8,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 env:
+  UPDATECLI_VERSION: v0.72.0
   UPDATECLI_GITHUB_USER: qe-repo-updater[bot]
   UPDATECLI_GITHUB_EMAIL: 152897211+qe-repo-updater[bot]@users.noreply.github.com
 jobs:
@@ -22,6 +23,8 @@ jobs:
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: "Setup updatecli"
         uses: updatecli/updatecli-action@ecfc21fd2d9e91be2af8b706ea10aea5154f6d5d # v2.54.0
+        with:
+          version: ${{ env.UPDATECLI_VERSION }}
       - name: "Create Token"
         uses: actions/create-github-app-token@86576b355dd19da0519e0bdb63d8edb5bcf76a25 # v1.7.0
         id: app-token
@@ -31,13 +34,12 @@ jobs:
           owner: ${{ github.repository_owner }}
       - name: "Run updatecli"
         run: |
-          updatecli version
           configs=$(ls -1 "./updatecli.d"/*.yml)
           for conf in $configs; do
             updatecli apply --config "$conf"
           done
         env:
+          UPDATECLI_GITHUB_USER: ${{ env.UPDATECLI_GITHUB_USER }}
+          UPDATECLI_GITHUB_EMAIL: ${{ env.UPDATECLI_GITHUB_EMAIL }}
           UPDATECLI_GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          UPDATECLI_GITHUB_ACTOR: ${{ github.actor }}
-          UPDATECLI_PULL_REQUEST: true

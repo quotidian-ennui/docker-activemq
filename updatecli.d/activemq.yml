@@ -1,12 +1,12 @@
-{{ $autoPullRequest := eq (env "UPDATECLI_PULL_REQUEST" | default "false") "true" }}
+# {{ $scmEnabled := and (env "GITHUB_REPOSITORY_OWNER") (env "GITHUB_REPOSITORY_NAME") }}
 
-{{ if $autoPullRequest }}
+# {{ if $scmEnabled }}
 actions:
   pull_request:
     scmid: default
-    title: 'deps(updatecli): Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
+    title: 'deps: Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
     kind: github/pullrequest
-    mergemethod: "rebase"
+    mergemethod: "squash"
     spec:
       labels:
         - dependencies
@@ -19,9 +19,9 @@ scms:
       branch: main
       owner: quotidian-ennui
       repository: docker-activemq
-      user: 'github-actions[bot]'
-      email: 41898282+github-actions[bot]@users.noreply.github.com
-      username: '{{ requiredEnv "UPDATECLI_GITHUB_ACTOR" }}'
+      user: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
+      email: '{{ requiredEnv "UPDATECLI_GITHUB_EMAIL" }}'
+      username: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       commitmessage:
         type: "chore"
@@ -29,7 +29,7 @@ scms:
         title: 'Bump ActiveMQ version to {{ source "activemqLatestVersion" }}'
         hidecredit: true
 
-{{ end }}
+# {{ end }}
 
 sources:
   activemqLatestVersion:
@@ -45,6 +45,9 @@ targets:
     kind: file
     sourceid: activemqLatestVersion
     name: Updates for each dockerfile
+    # {{ if $scmEnabled }}
+    scmid: default
+    # {{ end }}
     spec:
       files:
         - liberica-alpine/Dockerfile
@@ -53,6 +56,3 @@ targets:
         - msopenjdk/Dockerfile
       matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
       replacepattern: '$1={{ source `activemqLatestVersion` }}'
-{{ if $autoPullRequest }}
-    scmid: default
-{{ end }}
