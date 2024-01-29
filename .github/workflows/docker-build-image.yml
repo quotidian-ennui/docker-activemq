@@ -57,7 +57,7 @@ jobs:
           ref: ${{ inputs.target_branch }}
       - name: Build Docker Image
         id: docker_build
-        uses: quotidian-ennui/actions-olio/docker-image-builder@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        uses: quotidian-ennui/actions-olio/docker-image-builder@main
         with:
           registry_push: ${{ inputs.registry_push }}
           dockerfile: ${{ matrix.docker_target }}/Dockerfile
@@ -99,7 +99,7 @@ jobs:
             docker_platform: linux/amd64
     steps:
       - name: Set commit status to pending
-        uses: quotidian-ennui/actions-olio/commit-status-and-label@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@main
         if: |
           inputs.sha != ''
         with:
@@ -113,7 +113,7 @@ jobs:
           ref: ${{ inputs.target_branch }}
       - name: Build Docker Image
         id: docker_build
-        uses: quotidian-ennui/actions-olio/docker-image-builder@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        uses: quotidian-ennui/actions-olio/docker-image-builder@main
         with:
           registry_push: false
           load_locally: true
@@ -140,7 +140,7 @@ jobs:
             docker rmi "$image"
           done
       - name: set commit status
-        uses: quotidian-ennui/actions-olio/commit-status-and-label@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@main
         if: |
           (success() || failure()) &&  inputs.sha != ''
         with:
