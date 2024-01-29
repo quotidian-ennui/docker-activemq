@@ -30,4 +30,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       - name: generate-dependabot-config
-        uses: quotidian-ennui/actions-olio/generate-dependabot-config@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        uses: quotidian-ennui/actions-olio/generate-dependabot-config@main
