@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         # nicer logging when you look at the workflow run
-        docker_target: ['temurin', 'liberica-alpine', 'zulu-alpine']
+        docker_target: [ 'temurin', 'liberica-alpine', 'zulu-alpine' ]
         include:
           - docker_target: temurin
             docker_tag_suffix: ''
@@ -47,28 +47,28 @@ jobs:
             docker_platform: linux/amd64,linux/arm64
 
     steps:
-    - name: step-security/harden-runner
-      uses: step-security/harden-runner@eb238b55efaa70779f274895e782ed17c84f2895 # v2.6.1
-      with:
-        egress-policy: audit
-    - name: Checkout
-      uses: actions/checkout@v4.1.1
-      with:
-        ref: ${{ inputs.target_branch }}
-    - name: Build Docker Image
-      id: docker_build
-      uses: quotidian-ennui/actions-olio/docker-image-builder@main
-      with:
-        registry_push: ${{ inputs.registry_push }}
-        dockerfile: ${{ matrix.docker_target }}/Dockerfile
-        image_tag_suffix: ${{ matrix.docker_tag_suffix }}
-        image_platforms: ${{ matrix.docker_platform }}
-        ghcr_image_name: ghcr.io/${{ github.repository }}
-        dockerhub_image_name: lewinc/activemq
-        ghcr_user: ${{ github.repository_owner }}
-        ghcr_token: ${{ secrets.GITHUB_TOKEN }}
-        dockerhub_user: ${{ secrets.DOCKERHUB_USER }}
-        dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: step-security/harden-runner
+        uses: step-security/harden-runner@eb238b55efaa70779f274895e782ed17c84f2895 # v2.6.1
+        with:
+          egress-policy: audit
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ inputs.target_branch }}
+      - name: Build Docker Image
+        id: docker_build
+        uses: quotidian-ennui/actions-olio/docker-image-builder@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        with:
+          registry_push: ${{ inputs.registry_push }}
+          dockerfile: ${{ matrix.docker_target }}/Dockerfile
+          image_tag_suffix: ${{ matrix.docker_tag_suffix }}
+          image_platforms: ${{ matrix.docker_platform }}
+          ghcr_image_name: ghcr.io/${{ github.repository }}
+          dockerhub_image_name: lewinc/activemq
+          ghcr_user: ${{ github.repository_owner }}
+          ghcr_token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub_user: ${{ secrets.DOCKERHUB_USER }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
 
   # Separate job for testing the image because we can't load_locally if we build an arm64 image
   # Also, build msopenjdk even though we don't push it.
@@ -77,7 +77,13 @@ jobs:
     strategy:
       matrix:
         # nicer logging when you look at the workflow run
-        docker_target: ['temurin', 'liberica-alpine', 'zulu-alpine', 'msopenjdk']
+        docker_target:
+          [
+            'temurin',
+            'liberica-alpine',
+            'zulu-alpine',
+            'msopenjdk'
+          ]
         include:
           - docker_target: temurin
             docker_tag_suffix: ''
@@ -92,53 +98,53 @@ jobs:
             docker_tag_suffix: -msopenjdk
             docker_platform: linux/amd64
     steps:
-    - name: Set commit status to pending
-      uses: quotidian-ennui/actions-olio/commit-status-and-label@main
-      if: |
-        inputs.sha != ''
-      with:
-        sha: ${{ inputs.sha }}
-        pull_request: ${{ inputs.pull_request }}
-        label_prefix: "docker (${{ matrix.docker_target }}): "
-        state: pending
-    - name: Checkout
-      uses: actions/checkout@v4.1.1
-      with:
-        ref: ${{ inputs.target_branch }}
-    - name: Build Docker Image
-      id: docker_build
-      uses: quotidian-ennui/actions-olio/docker-image-builder@main
-      with:
-        registry_push: false
-        load_locally: true
-        dockerfile: ${{ matrix.docker_target }}/Dockerfile
-        image_tag_suffix: ${{ matrix.docker_tag_suffix }}
-        image_platforms: ${{ matrix.docker_platform }}
-        dockerhub_image_name: ${{ github.repository_owner }}/activemq-test
-    - name: ActiveMQ Version
-      id: docker_test
-      env:
-        DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
-      run: |
-        test_image=$(echo "$DOCKER_TAGS" | head -n 1 | cut -d' ' -f1)
-        docker run --rm --entrypoint=bash "$test_image" bin/activemq --version
-    - name: Cleanup
-      # Our work here is done, so cleanup
-      id: cleanup
-      if: success() || failure()
-      continue-on-error: true
-      env:
-        DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
-      run: |
-        for image in "$DOCKER_TAGS"; do
-          docker rmi "$image"
-        done
-    - name: set commit status
-      uses: quotidian-ennui/actions-olio/commit-status-and-label@main
-      if: |
-        (success() || failure()) &&  inputs.sha != ''
-      with:
-        sha: ${{ inputs.sha }}
-        pull_request: ${{ inputs.pull_request }}
-        label_prefix: "docker (${{ matrix.docker_target }}): "
-        state: ${{ steps.docker_test.outcome || steps.docker_build.outcome }}
+      - name: Set commit status to pending
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        if: |
+          inputs.sha != ''
+        with:
+          sha: ${{ inputs.sha }}
+          pull_request: ${{ inputs.pull_request }}
+          label_prefix: "docker (${{ matrix.docker_target }}): "
+          state: pending
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ inputs.target_branch }}
+      - name: Build Docker Image
+        id: docker_build
+        uses: quotidian-ennui/actions-olio/docker-image-builder@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        with:
+          registry_push: false
+          load_locally: true
+          dockerfile: ${{ matrix.docker_target }}/Dockerfile
+          image_tag_suffix: ${{ matrix.docker_tag_suffix }}
+          image_platforms: ${{ matrix.docker_platform }}
+          dockerhub_image_name: ${{ github.repository_owner }}/activemq-test
+      - name: ActiveMQ Version
+        id: docker_test
+        env:
+          DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
+        run: |
+          test_image=$(echo "$DOCKER_TAGS" | head -n 1 | cut -d' ' -f1)
+          docker run --rm --entrypoint=bash "$test_image" bin/activemq --version
+      - name: Cleanup
+        # Our work here is done, so cleanup
+        id: cleanup
+        if: success() || failure()
+        continue-on-error: true
+        env:
+          DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
+        run: |
+          for image in "$DOCKER_TAGS"; do
+            docker rmi "$image"
+          done
+      - name: set commit status
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@da869dde1ba7d5ba0aaa10e94f4c8fce3a8adae0 # v0.1.0
+        if: |
+          (success() || failure()) &&  inputs.sha != ''
+        with:
+          sha: ${{ inputs.sha }}
+          pull_request: ${{ inputs.pull_request }}
+          label_prefix: "docker (${{ matrix.docker_target }}): "
+          state: ${{ steps.docker_test.outcome || steps.docker_build.outcome }}

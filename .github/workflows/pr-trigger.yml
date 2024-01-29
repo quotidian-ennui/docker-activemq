@@ -17,27 +17,27 @@ jobs:
       pull-requests: read
     name: Dependabot workflow Trigger
     steps:
-    - name: Find associated PR
-      uses: jwalton/gh-find-current-pr@v1.3.2
-      id: findpr
-      with:
-        github-token: ${{ github.token }}
-        state: open
-        sha: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
-    - name: Grab Dependabot metadata
-      id: depbot-metadata
-      if: github.actor == 'dependabot[bot]'
-      continue-on-error: true
-      uses: dependabot/fetch-metadata@v1.6.0
-    - name: Repository Dispatch Event
-      uses: quotidian-ennui/actions-olio/repo-dispatch@main
-      with:
-        event_type: "pr-trigger"
-        token: ${{ secrets.GITHUB_TOKEN }}
-        sha: ${{ github.event.pull_request.head.sha }}
-        ref: ${{ github.head_ref }}
-        event_detail: |
-         {
-            "pull_request": "${{ steps.findpr.outputs.pr }}",
-            "dependabot_update_type": "${{ steps.depbot-metadata.outputs.update-type || 'unknown' }}"
-         }
+      - name: Find associated PR
+        uses: jwalton/gh-find-current-pr@7ada613939e2a233c83a1320679446fa1c6bdcb9 # v1.3.2
+        id: findpr
+        with:
+          github-token: ${{ github.token }}
+          state: open
+          sha: ${{ github.event.pull_request.head.sha || github.event.workflow_run.head_sha || github.sha }}
+      - name: Grab Dependabot metadata
+        id: depbot-metadata
+        if: github.actor == 'dependabot[bot]'
+        continue-on-error: true
+        uses: dependabot/fetch-metadata@c9c4182bf1b97f5224aee3906fd373f6b61b4526 # v1.6.0
+      - name: Repository Dispatch Event
+        uses: quotidian-ennui/actions-olio/repo-dispatch@8b6219d0434b423e00d0ec6918222f562f1f4806 # main
+        with:
+          event_type: "pr-trigger"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.head_ref }}
+          event_detail: |
+            {
+               "pull_request": "${{ steps.findpr.outputs.pr }}",
+               "dependabot_update_type": "${{ steps.depbot-metadata.outputs.update-type || 'unknown' }}"
+            }
