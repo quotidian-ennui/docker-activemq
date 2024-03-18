@@ -13,20 +13,27 @@ help:
 
 build-all: ## Do a local docker build using docker build
 ifndef ACTIVEMQ_VERSION
-	$(error ACTIVEMQ_VERSION environment variable not set)
-endif
 	for t in $(DOCKER_TARGETS); do \
 		target=$$(basename $$t); \
-		echo "-------- $$target ($(ACTIVEMQ_VERSION))"; \
+		echo "-------- $$target ($$(cat  "$${target}/Dockerfile" | grep "ARG ACTIVEMQ_VERSION"))"; \
+		"$(DOCKER)" build  . --no-cache --tag "$(BASE_TAG):$${target}" -f "$${target}/Dockerfile" --load; \
+	done
+else
+	for t in $(DOCKER_TARGETS); do \
+		target=$$(basename $$t); \
+		echo "-------- $$target (ENV ACTIVEMQ_VERSION=$(ACTIVEMQ_VERSION))"; \
 		"$(DOCKER)" build  . --no-cache --build-arg "ACTIVEMQ_VERSION=$(ACTIVEMQ_VERSION)" --tag "$(BASE_TAG):$${target}" -f "$${target}/Dockerfile" --load; \
 	done
+endif
 
 build-%: ## Do a specific local docker build (e.g. build-temurin) using vanilla docker build
 ifndef ACTIVEMQ_VERSION
-	$(error ACTIVEMQ_VERSION environment variable not set)
-endif
-	echo "-------- $* ($(ACTIVEMQ_VERSION))"
+	echo "-------- $* ($$(cat  "$*/Dockerfile" | grep "ARG ACTIVEMQ_VERSION"))"
+	"$(DOCKER)" build  . --no-cache --tag "$(BASE_TAG):$*" -f "$*/Dockerfile" --load
+else
+	echo "-------- $* (ENV ACTIVEMQ_VERSION=$(ACTIVEMQ_VERSION))"
 	"$(DOCKER)" build  . --no-cache --build-arg "ACTIVEMQ_VERSION=$(ACTIVEMQ_VERSION)" --tag "$(BASE_TAG):$*" -f "$*/Dockerfile" --load
+endif
 
 diff:  ## Check dependencies via updatecli
 	$(UPDATE_CLI) diff
