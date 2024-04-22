@@ -35,6 +35,9 @@ else
 	"$(DOCKER)" build  . --no-cache --build-arg "ACTIVEMQ_VERSION=$(ACTIVEMQ_VERSION)" --tag "$(BASE_TAG):$*" -f "$*/Dockerfile" --load
 endif
 
+run-%: ## Start an image that you build via build-%
+	docker run -it --rm "$(BASE_TAG):$*"
+
 diff:  ## Check dependencies via updatecli
 	$(UPDATE_CLI) diff
 
