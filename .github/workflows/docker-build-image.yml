@@ -137,7 +137,7 @@ jobs:
           DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
         run: |
           for image in "$DOCKER_TAGS"; do
-            docker rmi "$image"
+            docker rmi "$image" || true
           done
       - name: set commit status
         uses: quotidian-ennui/actions-olio/commit-status-and-label@main
