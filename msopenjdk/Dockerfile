@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/openjdk/jdk:21-ubuntu
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
-ARG ACTIVEMQ_VERSION=6.1.1
+ARG ACTIVEMQ_VERSION=6.1.2
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
