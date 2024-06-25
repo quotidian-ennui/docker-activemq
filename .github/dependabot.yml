@@ -12,31 +12,11 @@ updates:
     commit-message:
       prefix: "deps(actions): "
   - package-ecosystem: docker
-    directory: liberica-alpine
-    schedule:
-      interval: weekly
-    allow:
-      - dependency-type: all
-    commit-message:
-      prefix: "deps: "
-  - package-ecosystem: docker
-    directory: msopenjdk
-    schedule:
-      interval: weekly
-    allow:
-      - dependency-type: all
-    commit-message:
-      prefix: "deps: "
-  - package-ecosystem: docker
-    directory: temurin
-    schedule:
-      interval: weekly
-    allow:
-      - dependency-type: all
-    commit-message:
-      prefix: "deps: "
-  - package-ecosystem: docker
-    directory: zulu-alpine
+    directories:
+      - "liberica-alpine"
+      - "msopenjdk"
+      - "temurin"
+      - "zulu-alpine"
     schedule:
       interval: weekly
     allow:
