@@ -60,11 +60,30 @@ build tag="all":
     docker builder prune -f -a || true
 
 # run updatecli with args e.g. just updatecli diff
-[group("dev")]
+[group("release")]
 @updatecli *action="diff":
     updatecli "$@"
 
 # Show the change log
-[group("dev")]
+[group("release")]
 @changelog *args="--unreleased":
     git cliff "$@"
+
+# tag and optionally the tag
+[group("release")]
+release tag push="localonly":
+  #!/usr/bin/env bash
+  set -eo pipefail
+
+  git diff --quiet || (echo "--> git is dirty" && exit 1)
+  tag="{{ tag }}"
+  push="{{ push }}"
+  git tag "$tag" -m"release: $tag"
+  case "$push" in
+    push|github)
+      git push --all
+      git push --tags
+      ;;
+    *)
+      ;;
+  esac
