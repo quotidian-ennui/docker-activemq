@@ -24,9 +24,9 @@ scms:
       username: '{{ requiredEnv "UPDATECLI_GITHUB_USER" }}'
       token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
       commitmessage:
-        type: "chore"
-        scope: "deps"
-        title: 'Bump ActiveMQ version to {{ source "activemqLatestVersion" }}'
+        type: "feat"
+        scope: "activemq"
+        title: 'bump ActiveMQ version to {{ source "activemqLatestVersion" }}'
         hidecredit: true
 
 # {{ end }}
