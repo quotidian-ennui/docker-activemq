@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine:21
+FROM bellsoft/liberica-openjdk-alpine:24
 
 ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
 ARG ACTIVEMQ_VERSION=6.1.6
