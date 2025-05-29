@@ -1,5 +1,7 @@
 set positional-arguments := true
 set dotenv-load := true
+set unstable := true
+set script-interpreter := ['/usr/bin/env', 'bash']
 
 USER := `whoami`
 BASE_TAG := USER / "activemq"
@@ -11,8 +13,9 @@ BASE_TAG := USER / "activemq"
 
 # Build the activemq docker images
 [group("build")]
+[script]
 build tag="all":
-    #!/usr/bin/env bash
+    #
     set -eo pipefail
 
     docker_build() {
@@ -71,8 +74,9 @@ build tag="all":
 
 # tag and optionally the tag
 [group("release")]
+[script]
 release tag push="localonly":
-  #!/usr/bin/env bash
+  #
   set -eo pipefail
 
   git diff --quiet || (echo "--> git is dirty" && exit 1)
