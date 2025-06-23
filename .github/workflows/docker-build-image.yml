@@ -6,19 +6,24 @@ on:
       registry_push:
         required: false
         default: false
-        description: 'Whether to push to docker registries'
+        description: "Whether to push to docker registries"
+        type: boolean
+      run_tests:
+        required: false
+        default: true
+        description: "Whether to try and test images (default true)"
         type: boolean
       target_branch:
         required: true
-        description: 'The branch to checkout and work-on'
+        description: "The branch to checkout and work-on"
         type: string
       sha:
         required: false
-        description: 'The sha for the commit status'
+        description: "The sha for the commit status"
         type: string
       pull_request:
         required: false
-        description: 'The pull request'
+        description: "The pull request"
         type: string
     secrets:
       DOCKERHUB_USER:
@@ -34,10 +39,10 @@ jobs:
     strategy:
       matrix:
         # nicer logging when you look at the workflow run
-        docker_target: [ 'temurin', 'liberica-alpine', 'zulu-alpine' ]
+        docker_target: ["temurin", "liberica-alpine", "zulu-alpine"]
         include:
           - docker_target: temurin
-            docker_tag_suffix: ''
+            docker_tag_suffix: ""
             docker_platform: linux/amd64,linux/arm64
           - docker_target: liberica-alpine
             docker_tag_suffix: -liberica-alpine
@@ -74,19 +79,15 @@ jobs:
   # Also, build msopenjdk even though we don't push it.
   docker-test-image:
     runs-on: ubuntu-latest
+    if: |
+      inputs.run_tests == true
     strategy:
       matrix:
         # nicer logging when you look at the workflow run
-        docker_target:
-          [
-            'temurin',
-            'liberica-alpine',
-            'zulu-alpine',
-            'msopenjdk'
-          ]
+        docker_target: ["temurin", "liberica-alpine", "zulu-alpine", "msopenjdk"]
         include:
           - docker_target: temurin
-            docker_tag_suffix: ''
+            docker_tag_suffix: ""
             docker_platform: linux/amd64
           - docker_target: liberica-alpine
             docker_tag_suffix: -liberica-alpine

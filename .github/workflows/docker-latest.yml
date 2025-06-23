@@ -5,7 +5,8 @@ on:
   schedule:
     - cron: "15 04 * * SUN"
   push:
-    branches: main
+    branches:
+      - main
     paths-ignore:
       - "README.md"
       - ".github/workflows/updatecli.yml"
