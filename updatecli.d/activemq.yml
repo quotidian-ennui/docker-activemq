@@ -4,7 +4,7 @@
 actions:
   pull_request:
     scmid: default
-    title: 'feat(activem): Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
+    title: 'feat(activemq): Bump ActiveMQ version to to {{ source "activemqLatestVersion" }}'
     kind: github/pullrequest
     mergemethod: "squash"
     spec:
@@ -54,5 +54,5 @@ targets:
         - temurin/Dockerfile
         - zulu-alpine/Dockerfile
         - msopenjdk/Dockerfile
-      matchpattern: '(ARG ACTIVEMQ_VERSION)=(.*)'
-      replacepattern: '$1={{ source `activemqLatestVersion` }}'
+      matchpattern: "(ARG ACTIVEMQ_VERSION)=(.*)"
+      replacepattern: "$1={{ source `activemqLatestVersion` }}"
