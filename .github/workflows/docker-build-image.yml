@@ -60,6 +60,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ inputs.target_branch }}
+          persist-credentials: false
       - name: Build Docker Image
         id: docker_build
         uses: quotidian-ennui/actions-olio/docker-image-builder@main
@@ -84,7 +85,7 @@ jobs:
     strategy:
       matrix:
         # nicer logging when you look at the workflow run
-        docker_target: ["temurin", "liberica-alpine", "zulu-alpine", "msopenjdk"]
+        docker_target: ["temurin", "liberica-alpine", "zulu-alpine"]
         include:
           - docker_target: temurin
             docker_tag_suffix: ""
@@ -94,9 +95,6 @@ jobs:
             docker_platform: linux/amd64
           - docker_target: zulu-alpine
             docker_tag_suffix: -zulu-alpine
-            docker_platform: linux/amd64
-          - docker_target: msopenjdk
-            docker_tag_suffix: -msopenjdk
             docker_platform: linux/amd64
     steps:
       - name: Set commit status to pending
@@ -112,6 +110,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ inputs.target_branch }}
+          persist-credentials: false
       - name: Build Docker Image
         id: docker_build
         uses: quotidian-ennui/actions-olio/docker-image-builder@main
