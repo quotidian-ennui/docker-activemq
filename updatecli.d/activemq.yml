@@ -42,7 +42,7 @@ sources:
 
 targets:
   dockerfiles:
-    kind: file
+    kind: dockerfile
     sourceid: activemqLatestVersion
     name: Updates for each dockerfile
     # {{ if $scmEnabled }}
@@ -54,5 +54,6 @@ targets:
         - temurin/Dockerfile
         - zulu-alpine/Dockerfile
         - msopenjdk/Dockerfile
-      matchpattern: "(ARG ACTIVEMQ_VERSION)=(.*)"
-      replacepattern: "$1={{ source `activemqLatestVersion` }}"
+      instruction:
+        keyword: "ARG"
+        matcher: "ACTIVEMQ_VERSION"
