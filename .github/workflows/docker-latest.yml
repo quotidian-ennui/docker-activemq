@@ -13,9 +13,16 @@ on:
       - ".github/dependabot.yml"
       - ".github/docker-hub-desc.yml"
 
+permissions: {}
+
 jobs:
   build:
     if: ${{ github.actor != 'dependabot[bot]' }}
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+      statuses: write
     uses: ./.github/workflows/docker-build-image.yml
     with:
       registry_push: true

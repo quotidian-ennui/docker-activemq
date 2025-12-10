@@ -9,6 +9,11 @@ jobs:
   docker-tag:
     if: ${{ github.actor != 'dependabot[bot]' }}
     uses: ./.github/workflows/docker-build-image.yml
+    permissions:
+      contents: write
+      packages: write
+      pull-requests: write
+      statuses: write
     with:
       registry_push: true
       run_tests: false

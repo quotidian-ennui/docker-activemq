@@ -7,9 +7,13 @@ on:
     paths:
       - "README.md"
 
+permissions: {}
+
 jobs:
   docker-hub-description:
     name: Update Docker Hub description
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     if: github.actor != 'dependabot[bot]'
     steps:
