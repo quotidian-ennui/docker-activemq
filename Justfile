@@ -49,7 +49,11 @@ build tag="all":
 # Run a specific image
 [group("build")]
 @run tag: (build tag)
-    docker run -it --rm "{{ BASE_TAG }}:{{ tag }}"
+    docker run -it --rm -e JDK_JAVA_OPTIONS="-Djetty.host=0.0.0.0" \
+          -p127.0.0.1:8161:8161 -p127.0.0.1:61616:61616 \
+          -p127.0.0.1:5672:5672 -h activemq.local \
+          "{{ BASE_TAG }}:{{ tag }}"
+
 
 # Delete built images
 [group("build")]
