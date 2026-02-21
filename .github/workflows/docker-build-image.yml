@@ -68,7 +68,7 @@ jobs:
           persist-credentials: false
       - name: Build Docker Image
         id: docker_build
-        uses: quotidian-ennui/actions-olio/docker-image-builder@main
+        uses: quotidian-ennui/actions-olio/docker-image-builder@2224d6e995321a927dcefae3c67cb7fa63510728 # v0.8.3
         with:
           registry_push: ${{ inputs.registry_push }}
           dockerfile: ${{ matrix.docker_target }}/Dockerfile
@@ -109,7 +109,7 @@ jobs:
             docker_platform: linux/amd64
     steps:
       - name: Set commit status to pending
-        uses: quotidian-ennui/actions-olio/commit-status-and-label@main
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@2224d6e995321a927dcefae3c67cb7fa63510728 # v0.8.3
         if: |
           inputs.sha != ''
         with:
@@ -124,7 +124,7 @@ jobs:
           persist-credentials: false
       - name: Build Docker Image
         id: docker_build
-        uses: quotidian-ennui/actions-olio/docker-image-builder@main
+        uses: quotidian-ennui/actions-olio/docker-image-builder@2224d6e995321a927dcefae3c67cb7fa63510728 # v0.8.3
         with:
           registry_push: false
           load_locally: true
@@ -151,7 +151,7 @@ jobs:
             docker rmi "$image" || true
           done
       - name: set commit status
-        uses: quotidian-ennui/actions-olio/commit-status-and-label@main
+        uses: quotidian-ennui/actions-olio/commit-status-and-label@2224d6e995321a927dcefae3c67cb7fa63510728 # v0.8.3
         if: |
           (success() || failure()) &&  inputs.sha != ''
         with:
