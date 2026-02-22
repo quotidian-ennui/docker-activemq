@@ -83,12 +83,22 @@ release tag push="localonly":
   #
   set -eo pipefail
 
-  git diff --quiet || (echo "--> git is dirty" && exit 1)
+  check_uptodate() {
+    remote_hash=$(git ls-remote origin refs/heads/main | cut -f1)
+    local_hash=$(git rev-parse "$(git branch --show-current)")
+    if [[ "$remote_hash" != "$local_hash" ]]; then
+      echo "⚠️ Remote hash differs, are we up to date?"
+      exit 1
+    fi
+  }
+
+  git diff --quiet || (echo "⚠️ git is dirty" && exit 1)
+  check_uptodate
   tag="{{ tag }}"
   push="{{ push }}"
   git tag "$tag" -m"release: $tag"
   case "$push" in
-    push|github)
+    push|github|gh)
       git push --tags
       ;;
     *)
