@@ -7,13 +7,15 @@ Since rmohr/activemq hasn't built a docker image for a few months; here's 5.15.1
 - eclipse-temurin:25-jre (21-jre <= 6.1.7, 11-jre < 6.0.0, 8-jre <= 5.16.4)
 - azul/zulu-openjdk-alpine:25-jre (21-jre <= 6.1.7, 11-jre < 6.0.0, 8-jre <= 5.16.4)
 - bellsoft/liberica-openjdk-alpine:25 (21-jre <= 6.1.7, 11 < 6.0.0, 8 <= 5.16.4)
-- ~~mcr.microsoft.com/openjdk/jdk:21-ubuntu~~ (this isn't built automatically)
+- mcr.microsoft.com/openjdk/jdk:25-ubuntu (> 6.2.1)
 
- Since `eclipse-temurin` and `liberica-openjdk-alpine` have arm images, those are being built for _linux/amd64_ and _linux/arm64_. ~~zulu-openjdk-alpine doesn't have arm images (yet) for 11-jre so that's still only amd64~~ (`zulu-openjdk-alpine` now has arm64/v8). Everything should be being built via github actions.
+ Since `eclipse-temurin` and `liberica-openjdk-alpine` have arm images, those are being built for _linux/amd64_ and _linux/arm64_. ~~zulu-openjdk-alpine doesn't have arm images (yet) for 11-jre so that's still only amd64~~ (`zulu-openjdk-alpine` now has arm64/v8).
 
-Eventually I'll get bored too, and not update and so the cycle goes on; however the associated github project is here : https://github.com/quotidian-ennui/docker-activemq
+ The microsoft openjdk variant is just built for _linux/amd64_ though I suspect that an arm64 variant is available, I just can't be bothered to figure it out.
 
-> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) now exists which means that this image will die a slow death.
+Everything should be being built via github actions. Eventually I'll get bored too, and not update and so the cycle goes on; however the associated github project is here : https://github.com/quotidian-ennui/docker-activemq
+
+> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) now exists which means that this image _should_ die a slow death.
 > I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s) and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?).
 > You might continue using this image because the apache 5.18.2 doesn't have an arm64 image (yet) and you're running on a raspberry pi or something.
 
@@ -49,6 +51,6 @@ INFO: Loading '/opt/apache-activemq-5.17.4/bin/env'
 > These are things you're going to wish you knew eventually, so I'm going to tell you now.
 
 - Note the `-Djetty.host=0.0.0.0` since otherwise jetty.xml may be configured to only listen on 127.0.0.1 which has the tendency to break port forwarding; this doesn't matter if you never want to connect via a browser, but will potentially break KEDA.
-- `make diff` | `make update` to use updatecli to update the image in the dockerfiles.
+- `just updatecli apply` to use updatecli to update the image in the dockerfiles.
 - _5.18.0 brings JMS 2.0 support and also an additional `activemq-client-jakarta` jar for (optional) inclusion in your dependency tree_. The days of the `javax.jms` package are numbered and counting down; it will all come bubbling up and come to a head (with much wailing and gnashing of teeth on stackoverflow) when Spring 6.0 reaches GA (since `jakarta.*` packages will be a requirement for that, much like TPM 2.0 for Windows 11).
 - Removes the strict CORS from jolokia. When I was mucking around with KEDA previously (c. early 2022), CORS was breaking KEDA (this is now fixed in KEDA, but this might still be arbitrarily useful to be disabled)
