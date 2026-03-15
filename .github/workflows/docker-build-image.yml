@@ -32,8 +32,57 @@ on:
         required: true
 
 jobs:
+  matrix-setup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.dockerfiles.outputs.matrix}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.target_branch }}
+          persist-credentials: false
+      - name: Find Dockerfiles
+        id: dockerfiles
+        shell: bash
+        run: |-
+
+          build_matrix() {
+            mapfile dockerfiles < <(find . -name "Dockerfile")
+            for dockerfile in "${dockerfiles[@]}"; do
+              docker_target="$(basename "$(dirname "$dockerfile")")"
+              docker_tag_suffix="-$docker_target"
+              docker_platform="linux/amd64,linux/arm64"
+              docker_test_platform="linux/amd64"
+              case "$docker_target" in
+              temurin)
+                docker_tag_suffix=""
+                ;;
+              msopenjdk)
+                docker_platform="linux/amd64"
+                ;;
+              *)
+                ;;
+              esac
+              {
+                printf  '{ "docker_target": "%s", "docker_tag_suffix": "%s", "docker_platform": "%s", "docker_test_platform": "%s"}' \
+                    "$docker_target" "$docker_tag_suffix" "$docker_platform" "$docker_test_platform"
+              } | jq '.'
+            done | jq --slurp '{"include": .}'
+          }
+          eof=$(head -c15 /dev/urandom | base64)
+          {
+            printf "matrix<<%s\n" "${eof}";
+            build_matrix
+            printf "%s\n" "${eof}";
+          } >> "$GITHUB_OUTPUT"
+
   docker-build-image:
     runs-on: ubuntu-latest
+    needs:
+      - matrix-setup
     permissions:
       contents: write
       packages: write
@@ -42,19 +91,7 @@ jobs:
     if: |
       inputs.registry_push == true
     strategy:
-      matrix:
-        # nicer logging when you look at the workflow run
-        docker_target: ["temurin", "liberica-alpine", "zulu-alpine"]
-        include:
-          - docker_target: temurin
-            docker_tag_suffix: ""
-            docker_platform: linux/amd64,linux/arm64
-          - docker_target: liberica-alpine
-            docker_tag_suffix: -liberica-alpine
-            docker_platform: linux/amd64,linux/arm64
-          - docker_target: zulu-alpine
-            docker_tag_suffix: -zulu-alpine
-            docker_platform: linux/amd64,linux/arm64
+      matrix: ${{ fromJSON(needs.matrix-setup.outputs.matrix) }}
 
     steps:
       - name: step-security/harden-runner
@@ -85,7 +122,8 @@ jobs:
   # Also, build msopenjdk even though we don't push it.
   docker-test-image:
     runs-on: ubuntu-latest
-
+    needs:
+      - matrix-setup
     if: |
       inputs.run_tests == true
     permissions:
@@ -94,19 +132,7 @@ jobs:
       pull-requests: write
       statuses: write
     strategy:
-      matrix:
-        # nicer logging when you look at the workflow run
-        docker_target: ["temurin", "liberica-alpine", "zulu-alpine"]
-        include:
-          - docker_target: temurin
-            docker_tag_suffix: ""
-            docker_platform: linux/amd64
-          - docker_target: liberica-alpine
-            docker_tag_suffix: -liberica-alpine
-            docker_platform: linux/amd64
-          - docker_target: zulu-alpine
-            docker_tag_suffix: -zulu-alpine
-            docker_platform: linux/amd64
+      matrix: ${{ fromJSON(needs.matrix-setup.outputs.matrix) }}
     steps:
       - name: Set commit status to pending
         uses: quotidian-ennui/actions-olio/commit-status-and-label@1676ca6e5208a6f314f6c2255bdd8a072ddc33eb # v0.9.0
@@ -130,7 +156,7 @@ jobs:
           load_locally: true
           dockerfile: ${{ matrix.docker_target }}/Dockerfile
           image_tag_suffix: ${{ matrix.docker_tag_suffix }}
-          image_platforms: ${{ matrix.docker_platform }}
+          image_platforms: ${{ matrix.docker_test_platform }}
           dockerhub_image_name: ${{ github.repository_owner }}/activemq-test
       - name: ActiveMQ Version
         id: docker_test
