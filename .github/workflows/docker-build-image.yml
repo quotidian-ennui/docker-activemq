@@ -174,9 +174,10 @@ jobs:
         env:
           DOCKER_TAGS: ${{ steps.docker_build.outputs.image_tags }}
         run: |
-          for image in "$DOCKER_TAGS"; do
+          while IFS= read image; do
+            echo "Deleting $image"
             docker rmi "$image" || true
-          done
+          done <<< "$DOCKER_TAGS"
       - name: set commit status
         uses: quotidian-ennui/actions-olio/commit-status-and-label@83871db203c510c8c8d65292f24ebf5437728e7c # v0.9.1
         if: |
