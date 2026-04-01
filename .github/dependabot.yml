@@ -4,15 +4,17 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 20
     schedule:
-      interval: "cron"
-      cronjob: "23 4 * * 0,2,4"
+      interval: "daily"
+      time: "04:11"
+      timezone: "Europe/London"
     allow:
       - dependency-type: all
     commit-message:
       prefix: "deps(actions): "
   - package-ecosystem: docker
+    open-pull-requests-limit: 10
     directories:
       - "liberica-alpine"
       - "msopenjdk"
@@ -22,7 +24,7 @@ updates:
       interval: "weekly"
       day: "wednesday"
       time: "04:23"
-      timezone: Europe/London
+      timezone: "Europe/London"
     allow:
       - dependency-type: all
     commit-message:
