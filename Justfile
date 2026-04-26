@@ -1,6 +1,6 @@
-set positional-arguments := true
-set dotenv-load := true
-set unstable := true
+set positional-arguments
+set dotenv-load
+set unstable
 set script-interpreter := ['/usr/bin/env', 'bash']
 
 USER := `whoami`
@@ -82,7 +82,7 @@ next:
     set -eo pipefail
 
     lastTag=$(git tag | sort -rV | head -n1)
-    version=$(git log --format=format:'%s' "$lastTag"..HEAD | grep "Bump activemq" | sed -E "s/^.*([0-9]+\.[0-9]+\.[0-9]+).*$/\1/g" | sort -rV | head -n1) || true
+    version=$(git log --format=format:'%s' "$lastTag"..HEAD | grep -i "Bump activemq" | sed -E "s/^.*([0-9]+\.[0-9]+\.[0-9]+).*$/\1/g" | sort -rV | head -n1) || true
     if [[ -z "$version" ]]; then
       echo "No Version bump of activemq found?"
       echo "lastTag was $lastTag"
