@@ -7,6 +7,10 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-pr:
     uses: quotidian-ennui/workflows-olio/.github/workflows/check-pr-with-trigger.yml@6099af4157e6653a07431f39552a6b36bb331d2b # v2.1.0

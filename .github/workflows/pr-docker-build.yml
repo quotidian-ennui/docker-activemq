@@ -6,6 +6,11 @@ on:
       - pr-trigger
 
 permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 # A push via dependabot basically means that the github actions
 # have been upgraded; just make sure that the docker build works
 # but don't push a new image.
