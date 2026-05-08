@@ -33,6 +33,6 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
       - name: updatecli
-        uses: quotidian-ennui/actions-olio/default-updatecli@ab5c94f274ab4baa6b98e44fb3859f70bacdcb0e # v1.1.1
+        uses: quotidian-ennui/actions-olio/default-updatecli@0ecd062cb984f235c7bcaac871361b7718a9b0ce # v1.1.2
         with:
           token: ${{ steps.app-token.outputs.token }}
