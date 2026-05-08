@@ -148,6 +148,7 @@ jobs:
           ghcr_token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub_user: ${{ secrets.DOCKERHUB_USER }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          caching: local
 
   # Separate job for testing the image because we can't load_locally if we build an arm64 image
   docker-test-image:
@@ -216,6 +217,8 @@ jobs:
           image_tag_suffix: ${{ matrix.docker_tag_suffix }}
           image_platforms: ${{ matrix.docker_test_platform }}
           dockerhub_image_name: ${{ github.repository_owner }}/activemq-test
+          caching: none
+
       - name: ActiveMQ Version
         id: docker_test
         env:
