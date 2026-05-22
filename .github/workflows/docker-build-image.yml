@@ -122,6 +122,7 @@ jobs:
             packages.microsoft.com:443
             ports.ubuntu.com:80
             production.cloudflare.docker.com:443
+            production.cloudfront.docker.com:443
             registry-1.docker.io:443
             repo1.maven.org:443
             security.ubuntu.com:80
@@ -187,6 +188,7 @@ jobs:
             packages.microsoft.com:443
             ports.ubuntu.com:80
             production.cloudflare.docker.com:443
+            production.cloudfront.docker.com:443
             registry-1.docker.io:443
             repo1.maven.org:443
             security.ubuntu.com:80
