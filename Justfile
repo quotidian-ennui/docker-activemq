@@ -94,12 +94,14 @@ next:
 # Auto compute tag and optionally push
 [group("release")]
 [script]
-autotag push="localonly":
+please-release push="localonly":
     set -eo pipefail
 
     next=$(just next)
     echo "ℹ️ Tag & release $next"
     just release "$next" {{ push }}
+
+alias autotag := please-release
 
 # tag and optionally push tag
 [group("release")]
