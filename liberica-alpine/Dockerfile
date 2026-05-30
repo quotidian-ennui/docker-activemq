@@ -1,4 +1,4 @@
-FROM bellsoft/liberica-openjdk-alpine:25.0.3-11@sha256:b1f3a713f1c3a2dbf9b8fc24f26b165a3a60a0ca1a831087ce8ebb2a1c1659e9
+FROM bellsoft/liberica-openjdk-alpine:25@sha256:e8ac7321502a0dbabc502ba53d5c1a179ec5a21096cc4b9e52f4dad7b73844ee
 
 ARG BASE_URL=https://repo1.maven.org/maven2/org/apache/activemq/apache-activemq
 # ARG BASE_URL=https://repository.apache.org/content/repositories/releases/org/apache/activemq/apache-activemq/
