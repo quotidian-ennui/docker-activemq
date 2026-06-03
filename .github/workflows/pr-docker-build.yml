@@ -8,7 +8,7 @@ on:
 permissions: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.client_payload.detail.pull_request || github.ref }}
   cancel-in-progress: true
 
 # A push via dependabot basically means that the github actions
