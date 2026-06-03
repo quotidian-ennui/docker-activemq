@@ -1,4 +1,4 @@
-FROM azul/zulu-openjdk-alpine:25.0.3-25.34-jre@sha256:ccae164a882e90c148d55266435512e1b6718009b44c5ba2266891d0cf11ea64
+FROM azul/zulu-openjdk-alpine:25.0.3-25.34-jre@sha256:2b1340b8e7f0c74b955f31ddd9186def4c4dcc9277d8c32468cdc5d350d348e0
 
 ARG BASE_URL=https://repo1.maven.org/maven2/org/apache/activemq/apache-activemq
 ARG ACTIVEMQ_VERSION=6.2.6
