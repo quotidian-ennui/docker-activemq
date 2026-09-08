@@ -197,6 +197,8 @@ jobs:
             westcentralus.data.mcr.microsoft.com:443
             westus.data.mcr.microsoft.com:443
             westus2.data.mcr.microsoft.com:443
+            azure.archive.ubuntu.com:80
+            azure.archive.ubuntu.com:443
       - name: Set commit status to pending
         uses: quotidian-ennui/actions-olio/commit-status-and-label@03ea351ebcd69c199efa11e7b2b10ab2cd7f8158 # v1.3.4
         if: |
