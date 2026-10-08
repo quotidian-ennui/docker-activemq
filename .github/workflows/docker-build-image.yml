@@ -131,6 +131,8 @@ jobs:
             westus2.data.mcr.microsoft.com:443
             azure.archive.ubuntu.com:80
             azure.archive.ubuntu.com:443
+            repos.azul.com:443
+            repos.azul.com:80
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -199,6 +201,9 @@ jobs:
             westus2.data.mcr.microsoft.com:443
             azure.archive.ubuntu.com:80
             azure.archive.ubuntu.com:443
+            repos.azul.com:443
+            repos.azul.com:80
+
       - name: Set commit status to pending
         uses: quotidian-ennui/actions-olio/commit-status-and-label@607bdc8b9da4a24dbfb6aea4160f5cf5e205f2b2 # v1.3.6
         if: |
