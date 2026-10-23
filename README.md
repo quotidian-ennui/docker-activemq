@@ -1,9 +1,9 @@
 # docker-activemq [![docker-latest](https://github.com/quotidian-ennui/docker-activemq/actions/workflows/docker-latest.yml/badge.svg)](https://github.com/quotidian-ennui/docker-activemq/actions/workflows/docker-latest.yml) [![docker-tag](https://github.com/quotidian-ennui/docker-activemq/actions/workflows/docker-tag.yml/badge.svg)](https://github.com/quotidian-ennui/docker-activemq/actions/workflows/docker-tag.yml) [![Image Size](https://img.shields.io/docker/image-size/lewinc/activemq)](https://hub.docker.com/r/lewinc/activemq/) [![Latest Tag](https://img.shields.io/docker/v/lewinc/activemq?sort=semver)](https://hub.docker.com/r/lewinc/activemq/)
 
-
-# Vanilla ActiveMQ running in docker
+## Vanilla ActiveMQ running in docker
 
 Since rmohr/activemq hasn't built a docker image for a few months; here's 5.15.11+ activemq running using
+
 - eclipse-temurin:25-jre (21-jre <= 6.1.7, 11-jre < 6.0.0, 8-jre <= 5.16.4)
 - azul/zulu-openjdk-alpine:25-jre (21-jre <= 6.1.7, 11-jre < 6.0.0, 8-jre <= 5.16.4)
 - bellsoft/liberica-openjdk-alpine:25 (21-jre <= 6.1.7, 11 < 6.0.0, 8 <= 5.16.4)
@@ -13,15 +13,15 @@ Since rmohr/activemq hasn't built a docker image for a few months; here's 5.15.1
 
  The microsoft openjdk variant is just built for _linux/amd64_ though I suspect that an arm64 variant is available, I just can't be bothered to figure it out.
 
-Everything should be being built via github actions. Eventually I'll get bored too, and not update and so the cycle goes on; however the associated github project is here : https://github.com/quotidian-ennui/docker-activemq
+Everything should be being built via github actions. Eventually I'll get bored too, and not update and so the cycle goes on; however the associated github project is here : <https://github.com/quotidian-ennui/docker-activemq>
 
-> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) now exists which means that this image _should_ die a slow death.
+> Note that [https://hub.docker.com/r/apache/activemq-classic](https://hub.docker.com/r/apache/activemq-classic/tags) and [https://hub.docker.com/r/apache/activemq](https://hub.docker.com/r/apache/activemq/tags) now exist which means that this image _should_ die a slow death.
 > I've left it as-is because it takes very little actual effort on my part (updatecli + tag); I anticipate that 5.19.x may well be the last release(s) and it shouldn't really matter that much since you won't have been using it for anything other than testing because it's not hardened or productionized in any fashion (right?).
 > You might continue using this image because the apache 5.18.2 doesn't have an arm64 image (yet) and you're running on a raspberry pi or something.
 
 ## Startup
 
-```
+```bash
 activemq() {
   local AMQ_VER=$1
   local LATEST_TAG="latest-liberica-alpine"
@@ -44,7 +44,6 @@ INFO: Loading '/opt/apache-activemq-5.17.4/bin/env'
  INFO | ActiveMQ WebConsole available at http://0.0.0.0:8161/
  INFO | ActiveMQ Jolokia REST API available at http://0.0.0.0:8161/api/jolokia/
 ```
-
 
 ## Notes
 
