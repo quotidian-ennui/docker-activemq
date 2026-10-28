@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/openjdk/jdk:25-ubuntu@sha256:852e0ab1e2378cc144e7a75c6ad833efa282186ba24e4288ec8889826593e85a
+FROM mcr.microsoft.com/openjdk/jdk:25-ubuntu@sha256:955b399669af0064f678077401c798f0f8b4285682f4f24e3c33fe208c0252b7
 
 ARG BASE_URL=https://repo1.maven.org/maven2/org/apache/activemq/apache-activemq
 ARG ACTIVEMQ_VERSION=6.3.2
