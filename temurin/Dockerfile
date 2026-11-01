@@ -1,7 +1,7 @@
 FROM eclipse-temurin:27_35-jre@sha256:d6bfa738df69e8dec9061b3e26f2ae564d92ad169faa36086dcfa33f0a901d35
 
 ARG BASE_URL=https://repo1.maven.org/maven2/org/apache/activemq/apache-activemq
-ARG ACTIVEMQ_VERSION=6.3.2
+ARG ACTIVEMQ_VERSION=6.4.0
 ARG ACTIVEMQ=apache-activemq-$ACTIVEMQ_VERSION
 ARG ACTIVEMQ_TGZ=$ACTIVEMQ-bin.tar.gz
 ARG ACTIVEMQ_CHECKSUM=$ACTIVEMQ-bin.tar.gz.sha1
