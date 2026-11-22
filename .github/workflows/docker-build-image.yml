@@ -123,7 +123,6 @@ jobs:
             ports.ubuntu.com:80
             production.cloudflare.docker.com:443
             production.cloudfront.docker.com:443
-            docker-images-prod.s3.dualstack.us-east-1.amazonaws.com:443
             registry-1.docker.io:443
             repo1.maven.org:443
             security.ubuntu.com:80
@@ -134,6 +133,8 @@ jobs:
             azure.archive.ubuntu.com:443
             repos.azul.com:443
             repos.azul.com:80
+            tuf-repo-cdn.sigstore.dev:443
+            docker-images-prod.s3.dualstack.us-east-1.amazonaws.com:443
 
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
